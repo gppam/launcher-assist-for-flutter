@@ -4,7 +4,7 @@ This is a Flutter plugin that gives you basic access to Android's `PackageManage
 
 - `getAllApps()` - This method returns a map containing the labels, package names, and icons of all the launchable apps installed on a user's device. The icons are available as byte arrays.
 
-- `getAllInstalledApps()` - This method is the fetches the same as `getAllApps()` but only the user-installed apps.
+- `getAllInstalledApps()` - This method fetches the same properties as `getAllApps()` but only the user-installed apps.
 
 - `launchApp()` - Takes a package name as its only argument. As its name suggests, it lets you launch apps.
 
