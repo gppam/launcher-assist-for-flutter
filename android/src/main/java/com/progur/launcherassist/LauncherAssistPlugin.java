@@ -48,6 +48,8 @@ public class LauncherAssistPlugin implements MethodCallHandler {
   public void onMethodCall(MethodCall methodCall, Result result) {
       if(methodCall.method.equals("getAllApps")) {
           getAllApps(result);
+      } else if(methodCall.method.equals("getAllInstalledApps")) {
+          getAllInstalledApps(result);
       } else if(methodCall.method.equals("launchApp")) {
           launchApp(methodCall.argument("packageName").toString());
       } else if(methodCall.method.equals("getWallpaper")) {
@@ -108,6 +110,40 @@ public class LauncherAssistPlugin implements MethodCallHandler {
                   current.put("icon", iconData);
                   current.put("package", app.packageName);
                   _output.add(current);
+              }
+          } catch(Exception e) {
+              e.printStackTrace();
+          }
+      }
+
+      result.success(_output);
+  }
+
+  private void getAllInstalledApps(MethodChannel.Result result) {
+
+      Intent intent = new Intent(Intent.ACTION_MAIN, null);
+      intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+      PackageManager manager = registrar.context().getPackageManager();
+      List<ResolveInfo> resList = manager.queryIntentActivities(intent, 0);
+
+      List<Map<String, Object>> _output = new ArrayList<>();
+
+      for (ResolveInfo resInfo : resList) {
+          try {
+              ApplicationInfo app = manager.getApplicationInfo(
+                      resInfo.activityInfo.packageName, PackageManager.GET_META_DATA);
+              if (manager.getLaunchIntentForPackage(app.packageName) != null) {
+                  if (app.flags != 1) {
+                      byte[] iconData = convertToBytes(getBitmapFromDrawable(app.loadIcon(manager)),
+                              Bitmap.CompressFormat.PNG, 100);
+
+                      Map<String, Object> current = new HashMap<>();
+                      current.put("label", app.loadLabel(manager).toString());
+                      current.put("icon", iconData);
+                      current.put("package", app.packageName);
+                      _output.add(current);
+                  }
               }
           } catch(Exception e) {
               e.printStackTrace();

@@ -9,6 +9,12 @@ class LauncherAssist {
     return data;
   }
 
+  /// Returns a list of user-installed apps installed on the user's device
+  static getAllInstalledApps() async {
+    var data = await _channel.invokeMethod('getAllInstalledApps');
+    return data;
+  }
+
   /// Launches an app using its package name
   static launchApp(String packageName) {
     _channel.invokeMethod("launchApp", {"packageName": packageName});
